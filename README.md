@@ -14,6 +14,8 @@ See the benchmarks [here](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_
 
 ## Installation
 
+This gem requires `libvips` in order to run. For instructions on how to get it in OS X and Linux, follow [these installation guides](https://github.com/jcupitt/ruby-vips#installation-prerequisites).
+
 Add this line to your application's Gemfile:
 
 ```ruby
