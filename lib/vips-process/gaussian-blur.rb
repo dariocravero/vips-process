@@ -12,7 +12,7 @@ module Vips
       ##
       # Apply gaussian blur to an image.
       #
-      # @param  sigma      Integer  roughly the radius
+      # @param  sigma      Float    roughly the radius
       # @param  min_ampl   Float    minimium amplitude we consider, it sets how far out the mask goes
       def gaussian_blur(sigma, min_ampl=0.2)
         manipulate! do |image|
