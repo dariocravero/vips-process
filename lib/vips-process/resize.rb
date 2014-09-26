@@ -38,10 +38,10 @@ module Vips
           top   = 0
           left  = 0
 
-          if image.x_size > new_width
-            left = (image.x_size - new_width) / 2
-          elsif image.y_size > new_height
-            top = (image.y_size - new_height) / 2
+          if image.x_size > width
+            left = (image.x_size - width) / 2
+          elsif image.y_size > height
+            top = (image.y_size - height) / 2
           end
 
           image.extract_area left, top, width, height
