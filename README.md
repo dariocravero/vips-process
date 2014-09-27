@@ -74,6 +74,57 @@ class MyImage < Vips::Process::Base
 end
 ```
 
+### Working with versions
+
+Version dependencies are recursive. I.e., if you have:
+
+```
+class MyImage < Vips::Process::Base
+  # ...
+
+  version(:a) { ... }
+  version(:b, [:a])
+  version(:c, [:b])
+
+  # ...
+end
+```
+Calling `image.c_version` will actually call `image.b_version` which will in turn call
+`image.a_version` and then run version `b`'s code.
+
+
+`MyImage.versions` will return an array with the list of versions your image supports.
+
+
+Calling `image.versions!` will process all versions at once and will return an array with tuples
+like `[version_name, output_path]`. E.g. with the image class above:
+
+```
+image = MyImage.new('/path/to/src.jpg')
+image.versions! #=> [[:a, '/path/to/src-a.jpg'], [:b, '/path/to/src-b.jpg'], [:c, '/path/to/src-c.jpg']]
+```
+
+`versions!` takes one optional argument: the `base` destination. This could be either a directory
+or a filename.
+
+If you use a directory, all new files will be written to that directory
+(which will be created recursively if it doesn't exist) with the version's name followed by the `src`
+file extension. E.g.:
+```
+image = MyImage.new('/path/to/src.jpg')
+image.versions!('/path/to/dir/') #=> [[:a, '/path/to/dir/a.jpg'], [:b, '/path/to/dir/b.jpg'], [:c, '/path/to/dir/c.jpg']]
+```
+
+If you use a filename, all new files will be written next to that file prepending the version's name
+and using its extension. E.g.:
+
+```
+image = MyImage.new('/path/to/src.jpg')
+image.versions!('/path/to/dst.jpeg') #=> [[:a, '/path/to/dst-a.jpeg'], [:b, '/path/to/dest-b.jpeg'], [:c, '/path/to/dest-c.jpg']]
+```
+
+By default we use the `src`'s filename.
+
 ## Supported processes
 
 All examples live in the [/examples](https://github.com/dariocravero/vips-process/tree/master/examples)

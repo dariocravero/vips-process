@@ -65,6 +65,17 @@ module Vips
         self
       end
 
+      ##
+      # Resize the image to a certain width. It will keep its height in relation.
+      #
+      # @param  width   Integer   the width to scale the image to
+      def resize_to_width(width)
+        manipulate! do |image|
+          resize_image image, width, image.y_size
+        end
+        self
+      end
+
       private def resize_image(image, width, height, min_or_max = :min)
         ratio = get_ratio image, width, height, min_or_max
         return image if ratio == 1
@@ -83,7 +94,7 @@ module Vips
         image
       end
 
-      private def get_ratio(image, width,height, min_or_max = :min)
+      private def get_ratio(image, width, height, min_or_max = :min)
         width_ratio = width.to_f / image.x_size
         height_ratio = height.to_f / image.y_size
         [width_ratio, height_ratio].send min_or_max
