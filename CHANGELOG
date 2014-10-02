@@ -1,0 +1,19 @@
+# v0.2.0
+
+Release date: 2 Oct 2014
+
+* Introduce a cropping process.
+* Reworked the way we pass loading options to the image reader. If you want
+to enable sequential reading you have to explicitly call `sequential` before
+manipulating it. That will set @_load_opts[:sequential] = true for jpegs and
+pngs. More loading options (like shrink on load) could be added afterwards.
+* Simplified the `@_vimage` declaration in `manipulate!`.
+
+# v0.1.0
+Release date: 27 Sep 2014
+
+* Implemented versions
+
+# v0.0.1
+
+* Initial release
