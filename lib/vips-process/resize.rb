@@ -76,6 +76,18 @@ module Vips
         self
       end
 
+      ##
+      # Resize the image to a certain height. It will keep its width in relation.
+      #
+      # @param  height   Integer   the height to scale the image to
+      def resize_to_height(height)
+        manipulate! do |image|
+          resize_image image, image.x_size, height
+        end
+        self
+      end
+
+
       private def resize_image(image, width, height, min_or_max = :min)
         ratio = get_ratio image, width, height, min_or_max
         return image if ratio == 1

@@ -7,7 +7,10 @@ module Vips
       # @param  percent   Integer   quality from 0 to 100
       def quality(percent=75)
         manipulate! do |image|
-          @_format_opts = { quality: percent } if jpeg? || @_format == JPEG
+          if jpeg? || @_format == JPEG
+            @_format_opts ||= {}
+            @_format_opts[:quality]
+          end
           image
         end
         self

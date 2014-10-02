@@ -6,26 +6,23 @@ module Vips
     JPEG  = 'jpeg'.freeze
     PNG   = 'png'.freeze
 
+    def sequential(val=true)
+      @_load_opts[:sequential] = val if jpeg? || png?
+      self
+    end
+
     ##
     # Manipulate the image with Vips. Saving of the image is delayed until after
     # all the process blocks have been called. Make sure you always return an
     # VIPS::Image object from the block
     #
     # This method yields VIPS::Image for further manipulation.
-    #
-    # It also raises an Exception if the manipulation failed.
     def manipulate!
+      @_load_opts   ||= {}
       @_on_process  ||= []
-      @_vimage      ||= if jpeg?
-        VIPS::Image.jpeg  @src, sequential: true
-      elsif png?
-        VIPS::Image.png   @src, sequential: true
-      else
-        VIPS::Image.new   @src
-      end
-      @_vimage = yield @_vimage
-    rescue => e
-      raise Exception.new("Failed to manipulate file, maybe it is not a supported image? Original Error: #{e}")
+      @_type        ||= jpeg? ? :jpeg : (png? ? :png : :new)
+      @_vimage      ||= VIPS::Image.send @_type, @src, @_load_opts
+      @_vimage        = yield @_vimage
     end
 
     def process!
@@ -72,8 +69,9 @@ module Vips
     end
 
     private def reset!
+      @_load_opts   = {}
       @_on_process  = []
-      @_format_opts = nil
+      @_format_opts = {}
       @_vimage      = nil
     end
 

@@ -164,6 +164,78 @@ The first argument is the `format` we'll conver the file to (jpeg or png) and
 the second one is an optional hash of `options` to be passed to the converting function
 (ie, :interlace => true for png).
 
+### Crop
+
+Crop an image in the desired dimentions.
+
+Usage:
+
+Include it in your image class `include Vips::Process::Crop` and
+call it `MyImage.new('/path/to/src.jpg').crop(height: 100, top: 0.5)`.
+
+Because it's arguments can be used in so many different ways I've decided to make them keyword
+arguments with a default that would give you the same image back.
+
+There are four possible arguments in total: `width`, `height`, `left` and `top`.
+
+`width` and `height` do just that: they crop the resulting image in size.
+
+`left` and `top` are slightly different as they operate in two modes: if you use an Integer it's
+the just the offset. However, if a Float between 0 and 1 is passed it's used to position the cropping
+mask accordingly to the `width` and or `height` respectively. This is probable best seen with an
+example:
+
+```
+ Given:
+
+  i=image        cm=crop mask
+ ________        ________
+ |      |        |      |
+ |      |        |      |
+ |      |        --------
+ |      |
+ |      |
+ ________
+
+
+ crop height: cm.height, top: 0.0 will result in:
+
+ ________
+ | final|
+ | img  |
+ --------
+ |      |
+ |  x   |
+ ________
+
+ crop height: cm.height, top: 0.5 will result in:
+
+ ________
+ |  x   |
+ --------
+ | final|
+ | img  |
+ --------
+ |  x   |
+ ________
+
+ crop height: cm.height, top: 1.0 will result in:
+ ________
+ |      |
+ |  x   |
+ --------
+ | final|
+ | img  |
+ ________
+```
+
+It's also very powerful when used together with resize.
+E.g.: say you have an image that is 3000x2000 px.
+`image.resize_to_width(300).crop(height: 150, top: 0.5).process!` will first resize it to
+300x200 px and then it will crop it using a 150 height mask positioned in the middle of the
+resized image. It will give you an image of full width but with height starting at 25px and
+finishing at 175px. Here's a graphical example:
+
 ### Quality
 
 Changes quality of the image (if supported by the file format)
