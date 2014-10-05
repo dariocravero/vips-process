@@ -1,3 +1,9 @@
+# v0.2.2
+
+Release date: 5 Oct 2014
+
+* Fixed a regression on version calling.
+
 # v0.2.1
 
 Release date: 5 Oct 2014
