@@ -105,8 +105,9 @@ module Vips
       def version(name, deps = [], &block)
         throw :need_block_or_deps unless block_given? || !deps.empty?
 
-        @@_versions ||= {}
-        @@_versions[name] = {deps: deps, block: block}
+        versions = begin class_variable_get(:@@_versions) rescue {} end
+        versions[name] = {deps: deps, block: block}
+        class_variable_set :@@_versions, versions
 
         define_method "#{name}_version" do |new_dst=nil, should_process=true|
           # Make sure we have a reference to the old version if it's being changed
@@ -114,12 +115,13 @@ module Vips
             old_dst = @dst
             @dst = new_dst
           end
+          _versions = class_variable_get :@@_versions
 
           # Recursively call dependencies but don't process them yet
-          @@_versions[name][:deps].each { |dep| send "#{dep}_version", new_dst, false }
+          _versions[name][:deps].each { |dep| send "#{dep}_version", new_dst, false }
 
           # Run the version's block
-          instance_eval &@@_versions[name][:block]
+          instance_eval _versions[name][:block]
 
           # Process if we were explicitly told to do so
           version_dst = process! if should_process
@@ -132,7 +134,7 @@ module Vips
       end
 
       # Get all the version keys
-      def versions; @@_versions.keys; end
+      def versions; class_variable_get(:@@_versions).keys; end
     end
   end
 end

@@ -1,3 +1,10 @@
+# v0.2.1
+
+Release date: 5 Oct 2014
+
+* Fixed an overlooked issue with versions being set across all uses of the
+module.
+
 # v0.2.0
 
 Release date: 2 Oct 2014

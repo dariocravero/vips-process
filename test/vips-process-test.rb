@@ -31,6 +31,19 @@ test "it should define a version" do
   assert image.respond_to?(:blurred_version)
 end
 
+test "it should keep the versions within the class they were defined" do
+  class Image1 < Vips::Process::Base
+    version(:v1) { 'v1' }
+  end
+
+  class Image2 < Vips::Process::Base
+    version(:v2) { 'v2' }
+  end
+
+  assert_equal Image1.versions, [:v1]
+  assert_equal Image2.versions, [:v2]
+end
+
 test "it should allow a version to be composed out of other versions" do print 'S' end
 test "it should allow a version to be composed out of other versions and have a block" do print 'S' end
 test "it should reset the settings after process! runs" do print 'S' end
