@@ -66,14 +66,30 @@ module Vips
       #
       def crop(left: 0, top: 0, width: nil, height: nil)
         manipulate! do |image|
-          width   ||= image.x_size
-          height  ||= image.y_size
-          top       = top.is_a?(Float)  && top.between?(0,1)  ? (image.y_size - height) * top : top
-          left      = left.is_a?(Float) && left.between?(0,1) ? (image.x_size - width) * left : left
-
-          image.extract_area left, top, width, height
+          do_crop image, left, top, width, height
         end
         self
+      end
+
+      # Same as #crop but it returns the current image if there was an area issue while cropping
+      # instead of raising an exception.
+      def crop!(left: 0, top: 0, width: nil, height: nil)
+        manipulate! do |image|
+          begin
+            do_crop image, left, top, width, height
+          rescue VIPS::Error => e
+            e.message =~ /extract_area/ ? image : raise(e)
+          end
+        end
+      end
+
+      private def do_crop(image, left, top, width, height)
+        width   ||= image.x_size
+        height  ||= image.y_size
+        top       = top.is_a?(Float)  && top.between?(0,1)  ? (image.y_size - height) * top : top
+        left      = left.is_a?(Float) && left.between?(0,1) ? (image.x_size - width) * left : left
+
+        image.extract_area left, top, width, height
       end
     end # Crop
   end # Process

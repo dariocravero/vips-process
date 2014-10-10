@@ -236,6 +236,10 @@ E.g.: say you have an image that is 3000x2000 px.
 resized image. It will give you an image of full width but with height starting at 25px and
 finishing at 175px. Here's a graphical example:
 
+If the cropping area is outside of the boundaries of the current image `crop` will throw an
+Exception. If you would like it to silently ignore that issue and return the image as it came
+use `crop!` instead.
+
 ### Quality
 
 Changes quality of the image (if supported by the file format)
